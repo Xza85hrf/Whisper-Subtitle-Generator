@@ -13,7 +13,7 @@ from langdetect import detect, DetectorFactory
 from langdetect.lang_detect_exception import LangDetectException
 import argparse
 from multiprocessing import Pool
-import pkg_resources
+from importlib.metadata import distribution, PackageNotFoundError
 import psutil
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_audio
 from tqdm import tqdm
@@ -43,9 +43,9 @@ transcription_cache = {}
 def check_packages():
     for package in REQUIRED_PACKAGES:
         try:
-            dist = pkg_resources.get_distribution(package)
-            print('{} ({}) is installed'.format(dist.key, dist.version))
-        except pkg_resources.DistributionNotFound:
+            dist = distribution(package)
+            print('{} ({}) is installed'.format(package, dist.version))
+        except PackageNotFoundError:
             print('{} is NOT installed'.format(package))
             return False  # return false if any package is not installed
     return True
