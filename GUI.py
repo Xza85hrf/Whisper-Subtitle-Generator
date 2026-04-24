@@ -2,7 +2,6 @@
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 import threading
-# from Generate_TL_Sub_Frm_Video import main, stop_flag
 from Generate_TL_Sub_Frm_Video import main
 
 supported_languages = {
@@ -37,15 +36,24 @@ def open_file():
     if not output_file:
         return
     try:
-        threading.Thread(target=main, args=(
-            filename, language_code, output_file, int(chunk_size_entry.get()), use_gpu.get())).start()
+        # Keyword args to avoid positional mis-binding against main()'s
+        # signature (which currently is input_file, language, output_file,
+        # languages, chunk_size, multi_processing, single_chunk_test,
+        # model_name).
+        chunk_size_raw = chunk_size_entry.get().strip()
+        chunk_size = int(chunk_size_raw) if chunk_size_raw else 10
+        threading.Thread(
+            target=main,
+            kwargs=dict(
+                input_file=filename,
+                language=language_code,
+                output_file=output_file,
+                chunk_size=chunk_size,
+            ),
+        ).start()
         result_label.config(text="Subtitle generation started...")
     except Exception as e:
         result_label.config(text=f"Error: {e}")
-
-
-def stop_process():
-    stop_flag.set()
 
 
 root = tk.Tk()
@@ -79,9 +87,11 @@ chunk_size_entry.pack()
 open_button = tk.Button(root, text="Open Video File", command=open_file)
 open_button.pack()
 
-stop_button = tk.Button(root, text="Stop", command=stop_process)
-stop_button.pack()
-
+# The transcription worker runs in a daemon thread with no cooperative
+# cancel point, so a working Stop button would require the underlying
+# module to expose a shared stop_flag. It does not today — the button
+# used to reference an undefined name and crashed on click. Close the
+# window to terminate.
 result_label = tk.Label(root, text="")
 result_label.pack()
 

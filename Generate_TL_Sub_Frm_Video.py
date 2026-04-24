@@ -556,14 +556,18 @@ if __name__ == '__main__':
     # parser.add_argument('--languages', nargs='+', default=SUPPORTED_LANGUAGES, help='The list of supported languages.')
     args = parser.parse_args()
 
-    # Run the main function
-    main(args.input_file, args.language, args.output, args.chunk_size, args.multi_processing, args.single_chunk_test)
-    parser.add_argument('--num_processes', type=int, default=4)  # Set a default value
-    args = parser.parse_args()
-
+    # Run the main function. Keyword args so reordering main()'s signature
+    # later does not silently mis-bind values like num_processes to
+    # chunk_size.
     try:
-        main(args.input_file, args.language, args.output if args.output else 'output.srt', args.languages,
-             args.chunk_size, args.multi_processing, args.single_chunk_test)
+        main(
+            input_file=args.input_file,
+            language=args.language,
+            output_file=args.output,
+            chunk_size=args.chunk_size,
+            multi_processing=args.multi_processing,
+            single_chunk_test=args.single_chunk_test,
+        )
         logger.info("Subtitle generation process completed successfully.")
     except Exception as e:
         logger.error(f"Subtitle generation process failed: {e}")
