@@ -1,5 +1,9 @@
 # Whisper-Subtitle-Generator
-The Whisper Subtitle Generator leverages OpenAI's Whisper model to generate subtitles from audio and video files. This Python-based tool supports multiple languages and employs advanced audio processing techniques to ensure high accuracy in transcription.
+
+The Whisper Subtitle Generator leverages OpenAI's Whisper model to generate
+subtitles from audio and video files. This Python-based tool supports
+multiple languages and employs advanced audio processing techniques to
+ensure high accuracy in transcription.
 
 ## Features
 
@@ -9,35 +13,55 @@ The Whisper Subtitle Generator leverages OpenAI's Whisper model to generate subt
 - Utilizes GPU for accelerated processing (if available).
 - Outputs in SRT and VTT subtitle formats.
 
-## Prerequisites
-
-- Python 3.8 or newer.
-- ffmpeg for handling video files.
-- Whisper, librosa, PyDub, and other Python libraries.
-
-## Installation
-
-Clone this repository:
+## Quick Start
 
 ```bash
 git clone https://github.com/Xza85hrf/Whisper-Subtitle-Generator.git
-cd whisper-subtitle-generator
-
-Install the required Python packages:
+cd Whisper-Subtitle-Generator
+python -m venv .venv
+# Windows:
+.venv\Scripts\activate
+# macOS/Linux:
+source .venv/bin/activate
 pip install -r requirements.txt
 
-Usage
-Run the GUI application:
-python gui.py
+# GUI
+python GUI.py
 
-For command-line usage, you can use the following command:
-python main.py --input_file "path/to/your/video.mp4" --output "path/to/output.srt"
+# CLI
+python Generate_TL_Sub_Frm_Video.py --input_file "path/to/video.mp4" --output "path/to/output.srt"
+```
 
-Additional flags and options are described in the help:
-python main.py --help
+## Prerequisites
 
-Contributing
-Contributions are welcome! Please fork the repository and submit pull requests with your improvements.
+- Python 3.10 or newer.
+- `ffmpeg` on `PATH` for video decoding. Install via
+  [gyan.dev builds](https://www.gyan.dev/ffmpeg/builds/) on Windows,
+  `brew install ffmpeg` on macOS, or `sudo apt install ffmpeg` on Debian-family
+  Linux.
+- **GPU (optional):** A CUDA-capable NVIDIA GPU accelerates Whisper
+  substantially. The project falls back to CPU automatically if CUDA is not
+  available — expect inference to be 5-10× slower without a GPU. See the
+  [PyTorch install guide](https://pytorch.org/get-started/locally/) to
+  replace the default CPU wheel with a CUDA wheel matching your driver.
 
-License
-Distributed under the MIT License. See LICENSE for more information.
+## Usage
+
+- **GUI:** `python GUI.py` — opens a Tkinter window for picking the input
+  media and output directory.
+- **CLI:**
+  ```bash
+  python Generate_TL_Sub_Frm_Video.py --input_file "path/to/video.mp4" \
+      --output "path/to/output.srt"
+  ```
+  Run `python Generate_TL_Sub_Frm_Video.py --help` for all options.
+
+## Contributing
+
+Contributions are welcome — please fork the repository and submit pull
+requests with your improvements.
+
+## License
+
+Distributed under the MIT License. See [LICENSE](LICENSE) for more
+information.
